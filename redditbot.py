@@ -5,15 +5,16 @@ import time
 import os
 
 automod = 'AutoModerator'
+me = 'GoodBotAutoMod'
 
 
 def bot_login():
     print("Logging In...")
     r = praw.Reddit(username = "GoodBotAutoMod",
-            password = "",
-            client_id = "",
-            client_secret = "",
-            user_agent = "Wi_Tarrd's Good Bot v0.4")
+            password = "****************",
+            client_id = "****************",
+            client_secret = "****************",
+            user_agent = "Wi_Tarrd's Good Bot v0.7")
     print("Logged In!")
 
     return r
@@ -22,19 +23,45 @@ def run_bot(r, comments_replied_to):
     print("Obtaining Comments...")
     for comment in r.subreddit('memes').comments(limit=25):
 
-        if "I" in comment.body and comment.id not in comments_replied_to and comment.author == automod:
-            try:
-                print("Found AutoMod " + comment.id)
+        if "has been removed" in comment.body and comment.id not in comments_replied_to and comment.author == automod:
+            pass
+            #try:
+                #print("Found AutoMod Removed " + comment.id)
 
-                comment.reply("Good Bot. \n\n*I am a bot, and this action was performed automatically. Please contact u\/Wi_Tarrd with issues.*")
-                print("Replied to AutoMod " + comment.id)
+                #comment.reply("Good Bot. \n\n*I am a bot, and this action was performed automatically. Please contact u\/Wi_Tarrd with issues regarding the bot.*")
+                #print("Replied to AutoMod " + comment.id)
+
+                #comments_replied_to.append(comment.id)
+
+                #with open ("/home/WiTarrd/comments_replied_to.txt", "a") as f:
+                    #f.write(comment.id + "\n")
+            #except:
+                #print("Error")
+
+        elif comment.id not in comments_replied_to and comment.author == automod:
+            try:
+                print("Found Automod else " + comment.id)
+
+                comment.reply("Good Bot. \n\n*I am a bot, and this action was performed automatically. Please contact u\/Wi_Tarrd with issues regarding the bot.*")
+                print("Replied to Automod else " + comment.id)
 
                 comments_replied_to.append(comment.id)
 
                 with open ("/home/WiTarrd/comments_replied_to.txt", "a") as f:
                     f.write(comment.id + "\n")
-            except:
-                print("Error")
+            except: print("Error")
+
+        elif "!goodbot" in comment.body and comment.id not in comments_replied_to and comment.author != me:
+            try:
+                print("Found Summons " + comment.id)
+                comment.reply("Hello")
+                print("Replied to Summons " + comment.id)
+
+                comments_replied_to.append(comment.id)
+
+                with open ("/home/WiTarrd/comments_replied_to.txt", "a") as f:
+                    f.write(comment.id + "\n")
+            except: print("Error")
 
     for comment in r.subreddit('memes').comments(limit=25):
 
@@ -81,6 +108,3 @@ def get_saved_comments():
 
 r = bot_login()
 comments_replied_to = []
-
-while True:
-    run_bot(r, comments_replied_to)
